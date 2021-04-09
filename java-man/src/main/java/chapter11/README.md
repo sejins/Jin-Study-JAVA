@@ -6,7 +6,7 @@ JDK1.2부터 등장했다고 한다.
 
 ### _컬렉션 프레임 워크의 핵심 인터페이스_
 
-<img src="https://user-images.githubusercontent.com/71161576/114208224-377dc480-9998-11eb-8898-24716e2857c3.jpg"/>
+<img src="https://user-images.githubusercontent.com/71161576/114208224-377dc480-9998-11eb-8898-24716e2857c3.jpg" height="300" width="500"/>
 
 - List
   - 순서가 있는 데이터의 집합. 데이터의 중복을 허용한다.
