@@ -85,4 +85,44 @@ Enumeration은 Iterator의 구버젼이고, ListIterator는 Iterator를 상속�
 ### _Arrays 클래스_
 
 배열을 다루는데 유용한 메서드가 정의된 클래스.
-배열의 복사, 채우기, 정렬 및 검색, equals, toString, 리스트로 변환등의 기능이 있다.
+배열의 복사, 채우기, 정렬 및 검색, equals, toString, 리스트로 변환등의 기능이 있다.ㄴ
+
+### _Comparator & Comparable 인터페이스_
+
+Comparator 과 Comparable 는 둘 다 컬렉션을 정렬하는데 필요한 인터페이스로, 정렬을 하기 위한 메서드를 정의하고 있다.  
+Comparable는 정렬 수행 시 기본적으로 적용이 되는 메서드를 정의하는 인터페이스이다. 래퍼 클래스나 String 클래스 같이 자바에서 정렬이 가능한 것들이 Comparable 인터페이스를 구현했다.
+
+equals 메서드는 이미 모든 클래스가 가지고 있기 때문에, 따로 오버라이딩을 할 필요는 없다.
+
+```java
+public interface Comparator {
+  int compare(Object o1, Object o2);
+  boolean equals(Object obj);
+}
+
+public interface Comparable{
+  public int compareTo(Object o);
+}
+```
+
+즉, Comparable을 구현한 클래스는 정렬이 가능하고, 이 정렬 기준 이외의 것으로 정렬을 하고자 할 때는 Comparator를 구현한 클래스를 사용한다.  
+[참조](https://codevang.tistory.com/288)
+
+ComparatorTest 예제  
+음수 또는 0일때는 비교하는 객체들의 자리가 유지가 되고, 양수를 리턴할때 객체의 자리가 변경된다.  
+이렇게 Comparator를 통해서 커스텀한 정렬 기준을 만들 수 있다.
+
+### _HashSet_
+
+HashSet은 컬렉션 데이터의 중복을 허용하지 않고, 순서를 보장하지 않고 자체적인 저장 방식에 따라 순서가 결정된다. 순서를 고려해야한다면 LinkedHashSet을 사용해야한다.  
+Set에 객체를 추가할 때, 중복된 객체인지 판별하기 위해서 객체의 equals 메서드와 hashCode 메서드를 호출해서 같은 객체가 존재하는지 확인한다.  
+그래서 객체를 같은 객체로 인식할 것인지 지정하기 위해선 equals 메서드와 hashCode 메서드를 오버라이딩해서 커스터마이징해야한다.  
+HashSetEx 예제
+
+### _TreeSet_
+
+TreeSet은 이진 검색트리의 성능을 향상시킨 레드-블랙 트리로 구현이 된 Set이다.  
+Set을 구현했기 때문에 마찬가지로 중복을 허용하지 않고, 순서를 반영하지 않는다.  
+하지만 이진 검색트리 자료구조로 구현이 되었기 때문에 내부적으로 값을 정렬하게 된다.  
+정렬은 마찬가지로 TreeSet에 저장되는 객체가 Comparable을 구현했던가, 아니면 Comparator를 제공해서 정렬 기준을 알려줘야한다.
+이외의 다양한 메서드를 제공하는데 이는 필요할 때 API문서를 참고.
