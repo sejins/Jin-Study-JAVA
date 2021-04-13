@@ -126,3 +126,43 @@ Set을 구현했기 때문에 마찬가지로 중복을 허용하지 않고, 순
 하지만 이진 검색트리 자료구조로 구현이 되었기 때문에 내부적으로 값을 정렬하게 된다.  
 정렬은 마찬가지로 TreeSet에 저장되는 객체가 Comparable을 구현했던가, 아니면 Comparator를 제공해서 정렬 기준을 알려줘야한다.
 이외의 다양한 메서드를 제공하는데 이는 필요할 때 API문서를 참고.
+
+### _HashMap_
+
+HashMap은 Map 인터페이스를 구현한 클래스이다. 비슷한 클래스로 HashTable 클래스가 있는데 이는 예전 버전이므로 HashMap의 사용을 권장한다.  
+Map 인터페이스를 구현했기 때문에 key 와 value를 묶어서 하나의 데이터로 저장한다는 특징이 있다.  
+객체 지향적인 방식에 의해서 key 와 value는 HashMap 클래스의 내부 static 클래스인 Entry에 의해서 관리가 된다.
+
+```java
+.
+public class HashMap{
+  Entity[] table;
+  static class Entry{
+    Object key;
+    Object value;
+  }
+}
+```
+
+이런식으로  
+알다시피 key는 저장된 값을 찾기 위한 값으로, 유일해야하고 같은 key를 사용하게 될 시에 기존의 key에 해당하는 값을 수젇하게 된다.  
+HashMapEx 예제
+
+### _해싱과 해싱함수_
+
+컬렉션 중 HashSet 과 HashMap은 해싱을 구현한 컬렉션 클래스이다.  
+해싱에서 사용하는 자료구조는 다음과 같이 배열과 링크드리스트의 조합으로 구성이 된다.
+
+<img src="https://user-images.githubusercontent.com/71161576/114553731-eaa03380-9ca0-11eb-83fb-ddf349ab11af.png" height="300" width="500"/>
+
+저장할 데이터의 키를 해시함수에 넣으면 배열의 한 요소의 주소를 얻게 되고, 다시 그 곳에 연결되어 있는 링크드 리스트에 값을 저장하게 된다.  
+하지만 링크드 리스트의 인덱싱 성능이 효율적이지 못해서, 일반적인 해싱은 링크드 리스트의 원소가 하나인 즉, 하나의 해시코드(해시함수 리턴값)은 최대한 유일한 형태를 의미한다.
+<img src="https://user-images.githubusercontent.com/71161576/114553713-e4aa5280-9ca0-11eb-9e59-4ea3a0a8f3e2.png" height="300" width="500"/>  
+해시코드 값이 같다면, 이는 해시 충돌이 발생한 것이다.  
+앞에서 살펴 본 것처럼 HashMap 같이 해싱을 구현한 클래스들은 hashCode() 메서드를 사용한다.
+
+### _TreeMap_
+
+TreeSet과 유사하게 이진 검색 트리의 형태로 키와 값의 쌍을 저장한다. 이진 검색트리 자료구조를 사용하기 때문에 값이 정렬되어 저장이 된다. 기본정렬은 키값에 대해서 정렬이 된다. 커스텀 정렬 기준을 생성하기 위해서는 Comparator 클래스를 구현하면 된다.  
+검색에 관한 대부분의 경우에서 HashMap이 TreeMap 보다 더 뛰어나지만, 범위 검색이나 정렬이 필요한 경우에는 TreeMap을 사용하도록 하면 되겠다.  
+TreeMapEx 예제
