@@ -1,0 +1,36 @@
+package chapter12;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class GenericsExTest {
+
+    @DisplayName("지네릭 클래스의 사용")
+    @Test
+    void genericsEx1(){
+        Box<Fruit> fruitBox= new Box<>();
+        Box<Apple> appleBox= new Box<>();
+        Box<Toy> toyBox= new Box<>();
+//        Box<Grape> grapeBox= new Box<Apple>(); //에러.
+
+        fruitBox.add(new Fruit());
+        fruitBox.add(new Apple());
+        fruitBox.add(new Grape());
+//        fruitBox.add(new Toy()); // 에러.
+
+        appleBox.add(new Apple());
+//        appleBox.add(new Fruit()); // 에러.
+//        appleBox.add(new Toy()); // 에러.
+
+        toyBox.add(new Toy());
+//        toyBox.add(new Fruit()); //에러.
+//        toyBox.add(new Apple()); //에러.
+
+        System.out.println(fruitBox);
+        System.out.println(appleBox);
+        System.out.println(toyBox);
+    }
+
+}
