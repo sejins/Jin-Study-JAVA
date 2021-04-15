@@ -1,5 +1,5 @@
 package chapter12;
 
 public class GenericsEx {
-    // GenericsExTest에서 예제들 테스트
+    // GenericsExTest에서 예제 테스트
 }

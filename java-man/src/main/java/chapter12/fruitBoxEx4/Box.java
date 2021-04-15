@@ -1,4 +1,4 @@
-package chapter12;
+package chapter12.fruitBoxEx4;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ public class Box<T> {
 
     public T get(int i){return arrayList.get(i);}
 
-    public List<T> getList(){ return arrayList; }
+    public List<T> getList(){return arrayList;}
 
     public int size(){return arrayList.size();}
 
