@@ -192,7 +192,7 @@ Juicer.makeJuice(appleBox);
 ```java
 public static void printAll(ArrayList<? extends Product> list1, 
                         ArrayList<? extends Product> list2, ){...}
-```n   nnnnnnn                 
+```               
 ```java
 public static <T extends Product> void printAll(ArrayList<T> list1, 
                                             ArrayList<T> list2, ){...}
@@ -289,4 +289,8 @@ Optional<String> sopt2 = (Optional<String>)oopt; // 현변환 불가능.
 GenericAllAboutEx 예제에 헷갈리는거 다 해놓자
 
 지네릭은 돌아서면 헷갈린다...  
-반복해서 정리해놓은 것을 보자! 언젠가는 매끄럽게 이해하겠지~👍
+반복해서 정리해놓은 것을 보자! 언젠가는 매끄럽게 이해하겠지~👍  
+
+### **지네릭 타입과 Raw 타입**  
+[참고](https://velog.io/@eversong/Effective-Java-26.-%EB%A1%9C-%ED%83%80%EC%9E%85%EC%9D%80-%EC%82%AC%EC%9A%A9%ED%95%98%EC%A7%80-%EB%A7%90%EB%9D%BC)  
+Raw 타입에 대해서는 다시 한번 정리를 하던가 해야겠다.  
