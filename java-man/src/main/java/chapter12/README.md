@@ -41,10 +41,10 @@ raw 한 타입으로 객체를 생성했다고 경고가 나타나게 된다.
 * `T` : 타입 매개변수
 * `Box` : 원시 타입  
 
-예를 들어, Box<String> 과 Box<Integer>는 다른 타입 매개변수를 사용해서 객체를 생성한 것 뿐이지,
+예를 들어, `Box<String>` 과 `Box<Integer>`는 다른 타입 매개변수를 사용해서 객체를 생성한 것 뿐이지,
 이 둘이 별개의 클래스를 의미하는 것은 아니다.  
 이는 하나의 매서드에 매개변수를 다르게 줘서 호풀하는 것과 같은 맥락이라고 생각하면 될 듯하다.  
-컴파일 후에 Box<String> 과 Box<Integer>는 이들의 원시타입입 Box로 변경된다. 즉 지네릭 타입이 제거가 된다.  
+컴파일 후에 `Box<String>` 과 `Box<Integer>`는 이들의 원시타입입 Box로 변경된다. 즉 지네릭 타입이 제거가 된다.  
 
 ### **지네릭스의 제한사항**  
 지네릭 클래스의 객체를 생성할 때 객체 별로 다른 타입을 지정하는 것은 적절하다. 원래 인스턴스별로
@@ -121,7 +121,7 @@ Juicer.makeJuice(new FruitBox<Fruit>()); // 가능
 Juicer.makeJuice(new FruitBox<Apple>()); // 불가능
 ```  
 왜냐하면 raw 타입에 대해서만 다형성이 존재하고, 타입 파라미터에 대해서는 다형성이 존재하지 않는다.  
-즉, FruitBox< Fruit > <- FruitBox< Apple > 의 관계가 성립하지 않는다.  
+즉, `FruitBox< Fruit >  <--  FruitBox< Apple >` 의 관계가 성립하지 않는다.  
 [참고](https://thecodinglog.github.io/java/2020/12/15/java-generic-wildcard.html)  
 다형성이 성립하지 않기 때문에, 메서드를 오버로딩 해야한다.  
 ```java
@@ -155,3 +155,138 @@ static <T> void sort(List<T>, Comparator<? super T>)
 ```  
 * `Comparator<? super Apple>` : Comaparator< Apple >, Comaparator< Fruit >, Comaparator< Object >  
 * `Comparator<? super Grape>` : Comaparator< Grape >, Comaparator< Fruit >, Comaparator< Object >
+
+### **지네릭 메서드**  
+```java
+static <T> void sort(List<T>, Comparator<? super T> c)
+```  
+메서드의 선언부에 지네릭 타입이 선언된 메서드를 지네릭 메서드라고 한다.  
+지네릭 타입의 선언 위치는 반환 타입 바로 앞이다.  
+주의할 점은 지네릭 클래스에 정의된 타입 매개변수와 지네릭 메서드에 정의된 타입 매개변수는 별개라는 것이다.  
+설령 타입매개변수가 T 로 통일하더라도 이는 같은 것이 아니다.  
+지네릭 메서드는 지네릭 클래스가 아닌 클래스에도 정의될 수 있다.  
+앞에서 static 메서드에는 타입 매개변수를 사용할 수 없다고 했다, 하지만 지네릭 메서드는 static 메서드로 사용할 수 있다.  
+지네릭 메서드의 타입 매개변수 T 는 메서드에서 지역적으로 사용되는 타입이기 때문에 상관이 없다.  
+
+앞서 나왔던 메서드를 지네릭 메서드로 변경해보자.  
+```java
+static Juice makeJuice(FruitBox<? extends Fruit> box){...}
+```  
+```java
+static <T extends Fruit> Juice makeJuice(FruitBox<T> box){...}
+```  
+이렇게 지네릭 메서드를 사용하면 위에서 와일드 카드를 사용한 것과 동일하게, 메서드의 오버로딩이 가능해진다.  
+
+그리고 원래라면 메서드를 호출할 때 지네릭 타입을 명시해줘야하는데
+```java
+Juicer.<Fruit>makeJuice(fruitBox);
+Juicer.<Apple>makeJuice(appleBox);
+```  
+이 정도는 컴파일러가 타입을 추정할 수 있다.
+```java
+Juicer.makeJuice(fruitBox);
+Juicer.makeJuice(appleBox);
+```  
+이러한 형태로 와일드 카드의 사용과 지네릭 타입의 제한의 사용에 대해서 잘 이해할 수 있을 것 같다.  
+그냥 딱 직관적으로. 보이는대로 해석하면 된다.  
+```java
+public static void printAll(ArrayList<? extends Product> list1, 
+                        ArrayList<? extends Product> list2, ){...}
+```n   nnnnnnn                 
+```java
+public static <T extends Product> void printAll(ArrayList<T> list1, 
+                                            ArrayList<T> list2, ){...}
+```  
+마지막으로 이 정도를 이해할 수 있으면 될 듯하다.  
+
+### **지네릭 타입의 형변환**  
+우선 지네릭 타입과 넌 지네릭(non-generic) 타입간의 형변환은 가능하다. 
+```java
+Box box = null;
+Box<Object> objBox = null;
+
+box = (Box)objBox; // 가능하지만 경고발생
+objBox = (Box<Object>)box; // 마찬가지로 가능하지만 경고 발생
+```  
+하지만 이 경우에 대해서는 생각을 해봐야한다.  
+```java
+Box<String> strBox = null;
+Box<Object> objBox = null;
+
+strBox = (Box<String>)objBox; // 에러
+objBox = (Box<Object>)strBox; // 에러
+```  
+앞서 살펴본 것처럼, 타입 파라미터 간에는 다형성이 존재하지 않는다.  
+그래서 앞에서 와일드 카드를 통해, 지네릭 타입간의 다형성을 나타낸 것을 생각해볼 수 있다.  
+**쉽게 말해, 지네릭 타입의 다형성을 위해서는 와일드 카드를 사용한다고 생각하자.**  
+
+```java
+static Juice makeJuice(FruitBox<? extends Fruit> box){...}
+```  
+이 경우에 메서드의 인자로 `FruitBox<Fruit>` `FruitBox<Apple>` `FruitBox<Grape>` 타입이 모두 가능하다.  
+즉, 지네릭 타입의 다형성을 와일드 카드를 통해서 표현할 수 있다. 
+```java
+FruitBox<? extends Fruit> fruitBox1 = new FruitBox<Fruit>();
+FruitBox<? extends Fruit> fruitBox2 = new FruitBox<Apple>();
+FruitBox<? extends Fruit> fruitBox3 = new FruitBox<Grape>();
+```  
+역으로 다음과 같은 경우도 가능하지만, 확인되지 않은 형변환이라는 경고가 발생한다.  
+```java
+FruitBox<? extends Fruit> fruitbox = null;
+FruitBox<Apple> appleBox = (FruitBox<Apple>)box; // 경고.
+```
+`FruitBox<? extends Fruit>`  에 대입될 수 있는 타입은 여러개이지만, `FruitBox<Apple>`를
+제외한 다른 타입은 `FruitBox<Apple>`로 형변환 할 수 없기 때문이다.  
+
+실제 `Optional` 클래스의 일부를 보면서 이해해보자.  
+```java
+public final class Optional<T>{
+    private static final Optional<?> EMPTY = new Optional<>(); // 다형성
+    private final T value;
+    ...
+    public static <T> Optional<T> empty(){
+        Optional<T> t = (Optional<T>)EMPTY;
+        return t;
+    }
+    ...
+}
+```  
+여기서 유심히 봐야할 곳은 이부분인데,
+```java
+private static final Optional<?> EMPTY = new Optional<>();
+```   
+이는 이것과 동일하다.  
+```java
+Optional<?> EMPTY = new Optional<>();
+--> Optional<? extends Object> EMPTY = new Optional<>();
+--> Optional<? extends Object> EMPTY = new Optional<Object>();
+```  
+마지막 줄에서 의문이 생기는데, 마지막 줄이 이것과 다른 점은 무엇일까?  
+```java
+Optional<Object> EMPTY = new Optional<Object>();
+```  
+객체를 생성하는 부분은 동일하지만, `Optional<?>` 인 이유는 다형성에 의해 형변환이 가능하기 때문이다.  
+```java
+Optional<?> wopt = new Optional<Object>();
+Optional<Object> wopt = new Optional<Object>();
+
+Optional<String> sopt1 = (Optional<String>)wopt; // 형변환 가능.
+Optional<String> sopt2 = (Optional<String>)oopt; // 현변환 불가능.
+```  
+
+### **지네릭 타입의 제거**  
+앞서 말한 것처럼 `Box<String>` 와 `Box<Integer>` 별개의 클래스가 아니라고 했다.  
+컴파일러틑 먼저 지네릭 타입을 이용해서 소스코드를 체크하고(타입 체크), 필요한 곳에 형변환을 넣어주게 된다.  
+그리고 지네릭 타입을 제거하게 된다. 즉, 컴파일 후 클래스파일(*.class)에는 지네릭 타입이 존재하지 않는다.  
+
+**컴파일 시 지네릭 타입의 제거**
+1. 지네릭 타입을 보고 소스의 타입을 체크한다.
+2. 지네릭 타입의 경계를 제거한다.  
+      * 지네릭 타입이 `<T extends Fruit>` 인 경우 `T`는 `Fruit`로 치환된다. 
+      * 지네릭 타입이 `<T>`  인 경우 `T` 는 `Object` 로 치환된다.
+ 3. 지네릭 타입을 제거한 후에 타입을 일치시키기 위해서 형변환을 추가해준다.  
+
+GenericAllAboutEx 예제에 헷갈리는거 다 해놓자
+
+지네릭은 돌아서면 헷갈린다...  
+반복해서 정리해놓은 것을 보자! 언젠가는 매끄럽게 이해하겠지~👍

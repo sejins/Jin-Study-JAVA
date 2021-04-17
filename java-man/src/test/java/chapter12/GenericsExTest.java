@@ -75,5 +75,6 @@ class GenericsExTest {
 
         System.out.println(fruitJuice);
         System.out.println(appleJuice);
+
     }
 }
