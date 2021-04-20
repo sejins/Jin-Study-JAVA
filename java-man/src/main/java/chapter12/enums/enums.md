@@ -134,4 +134,28 @@ enum Direction{
 ```  
 EnumsEx 예제  
 예제를 통해서 열거형이 어떻게 상수를 `객체 지향적`으로 관리하고 사용하는지 알 수 있을 것이다.  
-[참고](https://www.nextree.co.kr/p11686/)  <<<< 열거형의 등장배경부터 현재까지에 대해서 정리가 잘 돼있음.
+[참고](https://www.nextree.co.kr/p11686/)  <<<< 열거형의 등장배경부터 현재까지에 대해서 정리가 잘 돼있음.  
+
+### **열거형의 이해**  
+처음 열거형을 공부했을 때 잘 이해가 되지 않았는데, 단순히 상수라는 관점에서 벗어나서 열거형 또한 클래스라고 생각하니 이해하기가 편했다.  
+열거형은 상수를 더 객체 지향적으로 관리하기 위해서 만든 클래스이다.  즉, 클래스의 관점에서 접근하면된다.  
+
+```java
+enum Direction{ EAST, SOUTH, WEST, NORTH }
+```  
+다음의 Driection 열거형에서 상수 하나하나가 Direction의 객체이다.  
+위의 열거형을 클래스로 정의한다면 다음과 같을 것이다.  
+```java
+class Direction{
+    static final Direction EAST = new Direction("EAST");
+    static final Direction SOUTH = new Direction("SOUTH");
+    static final Direction WEST = new Direction("WEST");
+    static final Direction NORTH = new Direction("NORTH");
+    
+    private String name;
+    
+    public Direction(String name){ this.name = name; }
+}
+```  
+즉 열거형의 상수의 값은 `static` 한 Direction객체의 주소이기 때문에 `==` 등의 연산으로 비교가 가능했던 것이다.  그리고 
+이 값은 `final` 이기 때문에 변하지 않는다.
