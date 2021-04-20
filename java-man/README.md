@@ -18,8 +18,7 @@ JAVA의 정석 3rd edition에 있는 내용 중 원하는 부분을 복습하고
 
 - Chapter14
 
-  - [람다와 스트림]()
+  - [람다와 스트림](https://github.com/sejins/Jin-Study-JAVA/tree/main/java-man/src/main/java/chapter14)
 
 - Chapter15
   - [I/O]()
-llllllo.
