@@ -364,3 +364,77 @@ default Predicate<T> negate()
 static <T> Predocate<T> isEqual(Object targetRef)
 ```  
 
+### **메서드 참조**  
+
+람다식이 `하나의 메서드`만을 호출하는 경우에는 `메서드 참조`라는 방법을 통해서 람다식을 더 간단하게 표현할 수 있다.  
+
+```java
+Function<String,Integer> f = s -> Integer.parseInt(s);
+```  
+문자열을 정수로 변환하는 이 람다식은 하나의 메서드만을 사용하기 때문에 메서드 참조를 사용할 수 있다.  
+
+```java
+Function<String, Integer> f = Integer::parseInt; // 메서드 참조
+```  
+
+메서드 참조를 하면서 람다식의 일부분이 생략이 되었지만, 컴파일러는 메서드의 선언부와 함수형 인터페에스의
+지네릭 타입을 통해서 이를 알아낼 수 있다.  
+
+```java
+BiFunction<String, String, Boolean> f = (s1,s2) -> s1.equals(s2);
+```  
+이를 다시 메서드 참조를 사용해서 나타내면 다음과 같다.  
+
+```java
+BiFunction<String, String, Integer> f = String::equals; // 메서드 참조
+```  
+
+말도안되게 코드가 간결해진다~!  
+컴파일러는 함수형 인터페이스를 통해서 입력으로 String 타입의 변수 두개가 입력으로 들어간다는 사실을 알고 있기 때문에
+이렇게 매개변수를 생략할 수 있게 되는 것이다.  
+
+그리고 이미 생성된 객체의 메서드를 람다식에서 사용한 경우에는 클래스 이름 대신 그 객체의 `참조변수`를 적어줘야 한다.  
+```java
+MyClass obj = new MyClass();
+Function<String, Boolean> f = x -> obj.equals(x);
+Function<String, Boolean> f2 = obj::equals(x); // 메서드 참조
+```  
+
+위에서 클래스 이름으로 메서드를 참조하는 방법과 참조변수의 이름으로 메서드 참조를 하는 방법의 `차이점`을 봐놓자!  
+
+종류 | 람다식 | 메서드 참조
+----|--------|-----------
+static 메서드 참조 | x -> ClassName.method(x) | ClassName::method
+인스턴스 메서드 참조 | (x,y) -> x.method(y) | ClassName::method
+특정 객체 인스턴스 메서드 참조 | x -> obj.method(x) | obj::method  
+
+**생성자의 메서드 참조**  
+
+생성자를 호출하는 람다식도 메서드 참조로 변환할 수 있다.  
+
+```java
+Supplier<MyClass> s = () -> new MyClass();
+Supplier<MyCLass> s2 = MyClass::new; // 메서드 참조
+```  
+매개변수가 있는 생성자라면, 매개변수의 개수에 따라서 함수형 인터페이스를 알맞게 사용하면 된다.  
+필요하면 새로운 함수형 인터페이스를 만들어야한다.  
+
+```java
+Function<Integer, MyClass> f = i -> new MyClass(i); // 람다식
+Function<Integer, MyClass> f2 = MyClass::new; // 메서드 참조
+
+BiFunction<Integer, String, MyClass> hf = (i,s) -> new MyClass(i,s); // 람다식
+BiFunction<Integer, String, MyClass> hf2 = MyClass::new; // 메서드 참조
+```
+```java
+// 배열의 생성
+Function<Integer, int[]> f = i -> new int[i];
+Function<Integer, int[]> f2 = int[]::new;
+```  
+
+이처럼 메서드 참조는 코드를 간략히 하는데 유용해서 많이 쓴다.  
+
+람다식을 메서드 참조로 변환하는 연습을 많이 하면 좋을 듯하다.  
+
+LambdaEx 예제  
+

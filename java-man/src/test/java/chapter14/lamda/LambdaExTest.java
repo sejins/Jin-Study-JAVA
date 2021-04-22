@@ -4,10 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 import static java.lang.System.out;
 
@@ -159,5 +156,32 @@ class LambdaExTest {
 
         Predicate<String> p2 =  Predicate.isEqual(str1);
         System.out.println(p2.test(str2));
+    }
+
+    @DisplayName("람다식 에제 - 메서드 참조")
+    @Test
+    void lambdaEx8(){
+
+        String str = "ABC";
+
+        // 특정 인스턴스의 메서드를 사용하는 람다식을 메서드 참조로 변환하기
+        Function<String, Boolean> f = s -> str.equals(s); // 람다식으로 표현
+        Function<String, Boolean> f1 = str::equals; // 메서드 참조로 표현
+//        Function<String, Boolean> f2 = String::equals; // 함수형 인터페이스의 지네릭 타입의 개수, 종류가 맞지않아서 static 클래스로 인식하게 됨. 결론은 에러라는 소리임
+
+        out.println(f.apply("ABC")); // true
+        out.println(f1.apply("BCD")); // false
+
+        // 인스턴스 메서드를 사용하는 람다식을 메서드 참조로 변환하기
+        BiFunction<String, String, Boolean> bf = (s1,s2) -> s1.equals(s2); // 람다식으로 표현
+        BiFunction<String, String, Boolean> bf2 = String::equals; // 메서드 참조로 표현
+
+        out.println(bf2.apply("ABC","ABC")); //true
+
+        //static 메서드를 사용하는 람다식을 메서드 찹조로 변환하기
+        Function<String, Integer> f2 = s -> Integer.parseInt(s); // 람다식으로 표현
+        Function<String, Integer> f3 = Integer::parseInt; // 메서드 참조로 표현
+
+        out.println(f3.apply("15")); //15 : int
     }
 }
