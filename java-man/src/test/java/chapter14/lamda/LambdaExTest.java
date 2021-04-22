@@ -10,7 +10,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.lang.System.out;
-import static org.junit.jupiter.api.Assertions.*;
 
 class LambdaExTest {
 
@@ -132,4 +131,33 @@ class LambdaExTest {
         LambdaEx.doSomethingIf(predicate, consumer, list);
     }
 
+    @DisplayName("람다식 예제 - 함수형 인터페이스의 결합")
+    @Test
+    void lambdaEx7(){
+
+        Function<String, Integer> f = s -> Integer.parseInt(s, 16);
+        Function<Integer, String> g = i -> Integer.toBinaryString(i);
+
+        Function<String, String> h = f.andThen(g);
+        Function<Integer, Integer> h2 = f.compose(g);
+        Function<String, String> h3 = f.andThen(i -> Integer.toBinaryString(i));
+        Function<String, String> h4 = ((Function<String, Integer>)(s -> Integer.parseInt(s, 16))).andThen(i -> Integer.toBinaryString(i));
+        // h, h3, h4는 모두 같은 내용임.
+
+        System.out.println(h.apply("FF")); // "11111111"
+        System.out.println(h2.apply(2)); // 16
+
+        Predicate<Integer> p = i -> i < 100;
+        Predicate<Integer> q = i -> i < 200;
+        Predicate<Integer> r = i -> i%2==0 ;
+        Predicate<Integer> notP = p.negate();
+        Predicate<Integer> all = notP.and(q.or(r));
+        System.out.println(all.test(150)); //true
+
+        String str1 = "ABC";
+        String str2 = "ABC";
+
+        Predicate<String> p2 =  Predicate.isEqual(str1);
+        System.out.println(p2.test(str2));
+    }
 }
