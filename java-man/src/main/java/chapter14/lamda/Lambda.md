@@ -436,5 +436,4 @@ Function<Integer, int[]> f2 = int[]::new;
 
 람다식을 메서드 참조로 변환하는 연습을 많이 하면 좋을 듯하다.  
 
-LambdaEx 예제  
-
+LambdaEx 예제

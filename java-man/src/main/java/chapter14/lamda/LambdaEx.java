@@ -8,6 +8,9 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class LambdaEx {
+
+    //LambdaExTest
+
     static void execute(Myfunction myfunction){
         myfunction.myMethod();
     }
