@@ -247,3 +247,67 @@ static <T, U extends Comparable<? super U>> Comparator<T> comparing(Function<T, 
 
 StreamEx 예제  
 
+**변환 - map**  
+
+스트림의 요소로 저장된 값 중에서 원하는 필드만 뽑아내거나, 특정 형태로 변환해야 할 때 사용할 수 있다.
+```java
+Stream<R> map(Function<? super T, ? extends R> mapper
+```  
+
+```java
+Stream<File> fileStream = Stream.of(new File("Ex1.java"), new File("Ex1"),new File("Ex1.bak"),
+        new File("Ex2.java"),new File("Ex1.txt"));
+
+fileStream.map(File::getName) // Stream<File> -> Stream<String>
+    .filter(s -> s.indexOf('.')!=-1) // 확장자가 없는것은 제외
+    .map(s -> s.subString(s.indexOf('.')+1)) // Stream<String> -> Stream<String>
+    .map(String::toUpperCase)
+    .distinct()
+    .forEach(System.out::Println);
+```  
+자세한 건 API 문서를 참조하자.  
+
+**갑자기 궁금해진 지네릭 메서드의 지네릭 타입 결정!**
+
+map은 알다시피 Stream의 메서드 중에서도 새로운 타입 R에 대한 지네릭 메서드이다.  
+그렇다면 지네릭 메서드의 타입을 컴파일러가 알아서 유추를 하는데 map 처럼 지네릭 타입이 R인데
+매개변수로 T extends R의 타입이 올 수 있으면, 이럴때 R의 타입을 어떻게 유추하는 것인지 궁금해졌다.
+
+StreamEx 예제  
+
+**조회 - peek**  
+
+연산 사이에 올바르게 처리가 되고 있는지 확인을 할 수 있다.  
+최종 연산이 아니기 떄문에 스트림을 소모하지 않는다.  
+
+StreamEx 예제 
+
+**기본형 스트림으로읜 변환**  
+
+```java
+DoubleStream mapToDouble(ToDoubleFunction<? super T> mapper)
+IntStream mapToInt(ToIntFunction<? super T> mapper)
+LongStream mapToLong(ToLongFunction<? super T> mapper)
+```  
+이러한 메서드를 통해서 스츠림을 기본형 스트림으로 변환할 수 있다.  
+
+```java
+Stream<U> mapToObj(IntStream<? super U> mapper) // IntStream -> Stream<U>
+Stream<Integer> boxed() // IntStream -> Stream<Integer>
+```  
+반대로 이런 메서드를 통해서 기본형 스트림에서 제네릭 스트림으로 변환도 가능하다.  
+
+```java
+Stream<String> strStream = Stream.of("12","34","56");
+strStream.mapToInt(Integer::parseInt); // ToIntFunction<? super T>
+```  
+
+**flatMap**  
+
+```java
+<R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper)
+```  
+flatMap을 통해서 결과가 `Stream<Stream<R>>` 인 람다식을 가지고 `Stream<R>` 의 스트림을 생성할 수 있다.  
+
+StreamEx 예제  
+
