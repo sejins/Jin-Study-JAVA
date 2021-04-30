@@ -4,9 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -101,5 +99,38 @@ class StreamExTest {
                 .forEach(System.out::println);
 
         System.out.println();
+    }
+
+    @DisplayName("Optional클래스 예제")
+    @Test
+    void optionalEx(){
+
+//        Optional<String> optVal = Optional.of(null); // Passing 'null' argument to parameter annotated as @NotNull  -> 컴파일 에러 발생
+        Optional<String> optVal2 = Optional.ofNullable(null);
+
+        Optional<String> optVal3 = Optional.empty();
+        Optional<String> optVal4 = null;
+        // 두개의 차이점. optVal4는 참조변수가 null이기 때문에 이는 어떠한 경우에도 NPE를 발생시킨다.
+        // 하지만 optVal3는 엄연한 Optinal 클래스의 인스턴스이고, 감싸고있는 내부의 value값이 null이기 때문에 이를 Optional클래스의 기본값으로 사용하는 것이 알맞다.
+        System.out.println(optVal3);
+        System.out.println(optVal4);
+
+//        optVal4.orElse("hello"); // 이경우 당연하게 NPE가 발생한다.
+        System.out.println(optVal3.orElse("이건 아니지롱"));
+        // 인텔리제이 진짜 똑똑하다.... 컴파일 에러뿐만아니라 논리적인 실수들도 알려주네,,,!!ㅋㅋㅋㅋ
+
+        Optional<String> opt = Optional.ofNullable("");
+        opt.ifPresent(s -> System.out.println("이거 null 아니다"));
+
+        int i = Optional.of("123").filter(s -> s.length() > 0).map(Integer::parseInt).orElse(-1);
+        System.out.println(i);
+
+        int i2 = Optional.of("").filter(s -> s.length() > 0).map(Integer::parseInt).orElse(-1);
+        System.out.println(i2);
+
+        OptionalInt optInt = OptionalInt.of(0);
+        OptionalInt optInt2 = OptionalInt.empty();
+        System.out.println(optInt.orElse(99));
+        System.out.println(optInt2.orElse(99));
     }
 }

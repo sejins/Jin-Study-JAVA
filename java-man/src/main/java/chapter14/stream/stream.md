@@ -311,3 +311,108 @@ flatMap을 통해서 결과가 `Stream<Stream<R>>` 인 람다식을 가지고 `S
 
 StreamEx 예제  
 
+## **Optional 클래스**  
+
+`Optional<T>` 클래스는 지네릭 클래스로 T 타입의 객체를 감싸는 래퍼 클래스이다.  
+
+```java
+public final class Optional<T>{
+    private final T value;
+    ....
+}
+```  
+그렇다면 이렇게 특정 타입의 객체를 Optinal 클래스에 담아서 사용하면 어떤 장점이 있는 것일까  
+
+바로 `null checking`을 간결하게 할 수 있기 때문이다.  
+
+NPE가 발생하지 않는 안전한 코드를 위해서는 지금까지는 if문을 통해서 null checking을 했었다.  
+
+하지만 Optional 클래스의 각종 메서드를 통해서 간결하고 직관적으로 `null safe` 한 코드를 작성할 수 있게 되었다.  
+
+**Otional 클래스의 생성** 
+
+`of( )` 와 `ofNullable( )` 메서드를 통해서 Optinal 클래스를 생성할 수 있다.
+
+단, of 의 매개변수는 null 이 아닌 값이어야한다. 그렇지 않으면 NPE를 발생시킨다.  
+
+즉 참조변수가 null일 가능성이 있는 경우에는 ofNullable을 사용한다.  
+
+그리고 null을 내부 value로 가지는 Optional 클래스를 생성하기 위해서는, `empty( )` 메서드를 사용.  
+
+```java
+Optional<String> optStr = Optional.empty();
+Optional<String> optStr2 = null;
+```  
+이 두가지의 차이점에 대해서는 예제에서 설명을 해놓았다. Optional 클래스의 기본형으로는 전자를 선택하는 것이 좋다.  
+
+**Optional 클래스의 값 사용하기**  
+
+여기부터가 Optional 클래스를 왜 사용하는지 알 수 있는 부분일것이다. Optional 클래스를 사용하지 않으면 이부분을 
+모두 if 문으로 처리해줘야한다.  
+
+`get( )` 메소드를 통해서 value값을 가져올 수 있지만, 만약 value 값이 null 이라면, NoSuchElementException 이 발생한다.  
+
+`orElse( )` 메소드를 통해서 value 값이 만약 null이라면 대체해서 사용할 값을 지정할 수 있다.  
+
+그리고 orElse의 변형으로 `orElseGet( )` 메소드를 통해 null 대신 사용할 값을 반환하는 람다식을 지정 가능하고, 
+
+orElseThrow( ) 를 통해서 null의 경우에 지정된 예외를 발생시킬수도 있다.
+```java
+String str3 = optStr3.ofElseGet(String::new);
+String str4 = optStr4.orElseThrow(NullPointException::new);
+```
+이런식으로 사용이 가능하다.  
+
+자세한건 API문서를 참고하도록하고, 이런 느낌으로 Optional클래스가 사용이 된다고 보면 된다.  
+
+Optional 클래스는 스트림처럼 `map`, `flatMap`, `filter` 메소드를 사용할 수 있다.  
+    
+여기에서도 마찬가지로 flatMap은 `Optional<Optional<T>>` 를 반환하는 람다식을 통해 `Optional<T>` 를 반환하게 한다.  
+
+자세한 사용은 API문서 참고!  
+
+`isPresent( )` 메서드는 Optional 클래스의 value가 null이면 false, 아니면 true 를 반환한다. 
+
+`ifPresent(Consumer<T> block)` 메서드는 value값이 null이면 아무것도 수행하지 않고, 그렇지 않으면 람다식의 내용
+을 수행한다.  
+
+```java
+Optional.ofNullable(str).ifPresent(System.out::Println);
+```  
+if문 없이 이렇게 한줄로 null checking 과 그다음 동작을 수행할 수도 있다.  
+
+isPresent 메소드는 Optinal 클래스를 반환하는 스트림의 최종연산과 자주 사용이 된다.  
+
+이 메서드들은 필요할 때 API문서를 참고하자.  
+
+**기본형을 value로 가지는 Optional**  
+
+Optional 클래스도 기본형을 값으로 가지는 클래스들이있다.  
+`OptionalInt`, `OptionalDouble`, `OptionalLong` 클래스는 제네릭 클래스가 아닌 각 자료형의 value 값을 가진다.  
+
+제네릭 클래스가 아니라는 점을 제외하면 기존의 Optional 클래스와 동일하다.  
+
+이처럼 기본형을 값으로 하는 Optional 클래스는 주의해야할 점이 있다.  
+
+```java
+OptionalInt optInt = OptionalInt.of(0);
+OptionalInt optInt2 = OptionalInt.empty();
+```  
+이 두가지가 구분이 되냐에 관한 것이다.  
+기본형 타입은 초깃값이 0이다. (타입에 따라서 0의 형태는 다를 수있다.)  
+
+그렇다면 empty로 생성을 했을때도 value의 값을 0이 될텐데 이러면 두가지를 구분을 할 수 있냐는 것이다.  
+이는 isPresent 메서드로 구분이 가능하다.  
+
+```java
+optInt.isPresent(); // true
+optInt2.isPresent(); // false
+optInt.equals(optInt2); // false
+``` 
+
+하지만 일반적인 Optional클래스에서는 null 과 그렇지 않은 참조변수의 값이 명확하기 때문에 이런 문제가 없다.  
+```java
+Optional<String> opt = Optional.ofNullable(null);
+Optional<String> opt2 = Optional.empty();
+opt.equals(opt2); // true
+```
