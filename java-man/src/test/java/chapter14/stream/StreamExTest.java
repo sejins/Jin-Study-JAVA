@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,7 +87,7 @@ class StreamExTest {
 
     @DisplayName("flatMap 에제")
     @Test
-    void streamEx(){
+    void streamEx4(){
         Stream<String[]> strArrStrm = Stream.of(new String[]{"abc","def","jkl"},
                 new String[]{"ABC","GHI","JKL"}); // 배열의 스트림
 
@@ -132,5 +133,32 @@ class StreamExTest {
         OptionalInt optInt2 = OptionalInt.empty();
         System.out.println(optInt.orElse(99));
         System.out.println(optInt2.orElse(99));
+    }
+
+    @DisplayName("최종연산 예제")
+    @Test
+    void streamEx5(){
+        String[] strArr = {"Inheritance","Java","Lambda","stream","Spring","OptionalDouble","count","sum","JPA"};
+
+        Stream.of(strArr).forEach(System.out::println); // 단순히 출력
+
+        boolean noEmptyStr = Stream.of(strArr).noneMatch(s -> s.length()==0);
+        Optional<String> strOpt = Stream.of(strArr).filter(s -> s.charAt(0)=='s').findFirst();
+
+        System.out.println(noEmptyStr);
+        System.out.println(strOpt.orElse("No Element"));
+
+        IntStream intStream1 = Stream.of(strArr).mapToInt(String::length);
+        IntStream intStream2 = Stream.of(strArr).mapToInt(String::length);
+        IntStream intStream3 = Stream.of(strArr).mapToInt(String::length);
+        IntStream intStream4 = Stream.of(strArr).mapToInt(String::length);
+        // 제공되는 메서드가 있지만, reduce의 사용을 위해서 굳이 구현을 해봤다.
+
+        int count = intStream1.reduce(0, (a,b) -> a + 1);
+        int sum = intStream2.reduce(0, (a,b) -> a + b);
+        OptionalInt max = intStream3.reduce(Integer::max);
+        OptionalInt min = intStream4.reduce(Integer::min);
+
+        System.out.println(count + " " + sum + " " + max.orElse(-99999) + " " + min.orElse(99999));
     }
 }

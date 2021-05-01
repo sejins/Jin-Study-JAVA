@@ -415,4 +415,60 @@ optInt.equals(optInt2); // false
 Optional<String> opt = Optional.ofNullable(null);
 Optional<String> opt2 = Optional.empty();
 opt.equals(opt2); // true
+```  
+
+## **스트림의 최종연산**  
+
+최종 연산은 스트림의 요소를 소모해서 결과를 만들어낸다. 그렇기 때문에 최종 연산을 수행하고 나면 
+스트림이 닫히게 되어 다시 사용할 수 없다.
+
+최종 연산의 결과는 스트림 요소의 합과 같은 단일 값이거나, 스트림 요소들이 담긴 배열 또는 컬렉션일 수 있다.
+
+메서드들에 대한 자세한 내용은 API문서를 참고하고, 헷갈릴것 같은 내용 위주로 정리를 해야겠다.  
+
+다음 메서드들은 선언부만 봐도 대략 어떻게 사용하는지 유추할 수 있는 메서드 들이라서 함수형 인터페이스와 
+익숙해지고자 일단 적어놓았다. 
+
+```java
+void forEach(Consumer<? super T> action)
+```  
+```java
+boolean allMatch(Predicate<? super T> perdicate)
+boolean anyMatch(Predicate<? super T> predicate)
+booelan noneMatch(Predicate<? super T> predicate)
 ```
+```java
+long count()
+Optional<T> max(Comparator<? super T> comparator)
+Optional<T> min(Comparator<? super T> comparator)
+```
+
+**reduce**  
+
+```java
+Optional<T> reduce(BinaryOperator<T> accumulator)
+```  
+
+reduce 연산은 accumulator에 해당하는 연산으로 스트림의 요소를 하나씩 소모하면서 결국에는 스트림의 모든 요소를 소모하
+게되고 그 결과를 반환한다. 
+
+초깃값이 있는 reduce 메서드도 존재한다.
+
+```java
+T reduce(T identity, BinarayOperator<T> accumulator)
+```  
+
+count, sum 등의 최종연산이 내부적으로 reduce를 이용해서 작성된 것이다.  
+
+기본형 스트림의 reduce 메서드는 리턴타입도 기본형 Optional 타입인것만 제외하면 나머지는 동일하다.  
+
+max 구현하는 예를 들자면 다음과 같을 것이다.
+
+```java
+OptionalInt max = intStream.reduce((a,b) -> a>b ? a : b);
+OptionalInt max = intStream.reduce(Integer::max);
+```  
+
+reduce는 한마디로 스트림의 요소를 소모하면서 연산을 수행하게 되는데, 연산을 수행한 결과와 다음 스트림을 계속해서 
+연산하여 스트림을 다 소모할때까지 연산을 수행하고, 그 최종 연산 결과를 반환하는 것이다.  
+
