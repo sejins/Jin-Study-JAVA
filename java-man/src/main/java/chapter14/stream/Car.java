@@ -8,6 +8,8 @@ public class Car implements Comparable<Car>{
 
     private int price;
 
+
+
     @Override
     public String toString() {
         return manufacturer+" "+name+" "+price;
@@ -35,5 +37,9 @@ public class Car implements Comparable<Car>{
     @Override
     public int compareTo(Car o) { // 기본정렬 조건 : price에 대해서 내림차순 정렬
         return o.price - this.price;
+    }
+
+    public boolean isBenz(){
+        return manufacturer.equals("benz");
     }
 }

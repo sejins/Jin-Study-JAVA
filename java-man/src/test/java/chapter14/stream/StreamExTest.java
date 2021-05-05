@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import static java.lang.System.out;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -135,7 +137,7 @@ class StreamExTest {
         System.out.println(optInt2.orElse(99));
     }
 
-    @DisplayName("최종연산 예제")
+    @DisplayName("최종연산 예제 - reduce")
     @Test
     void streamEx5(){
         String[] strArr = {"Inheritance","Java","Lambda","stream","Spring","OptionalDouble","count","sum","JPA"};
@@ -160,5 +162,99 @@ class StreamExTest {
         OptionalInt min = intStream4.reduce(Integer::min);
 
         System.out.println(count + " " + sum + " " + max.orElse(-99999) + " " + min.orElse(99999));
+    }
+
+    @DisplayName("최종연산 예제 - collect")
+    @Test
+    void streamEx6(){
+        Car[] cars = new Car[]{new Car("bmw","520d",6300),
+                new Car("benz","e300",8200),
+                new Car("genesis","g90",9700),
+                new Car("bmw","m5",13700),
+                new Car("genesis","g80",7700),
+                new Car("benz","c63",10200),
+                new Car("bmw","m340",7800)};
+
+        // 이름만 출력해서 이를 다시 List에 저장.
+        List<String> carNames = Stream.of(cars).map(Car::getName).collect(Collectors.toList());
+        out.println(carNames);
+
+        // 스트림을 배열로 변환
+        Car[] cars1 = Stream.of(cars).toArray(Car[]::new);
+
+        // 스트림을 Map으로 변환. 자동차의 이름이 key역할.
+        Map<String, Car> map = Stream.of(cars).collect(Collectors.toMap(Car::getName, v -> v));
+        for(String key : map.keySet()){
+            out.println(key + " : " + map.get(key));
+        }
+
+        //통계기능
+        long count = Stream.of(cars).collect(Collectors.counting());
+        long totalPrice = Stream.of(cars).collect(Collectors.summingLong(Car::getPrice));
+        out.printf("count : %d  total price : %d%n",count,totalPrice);
+
+        Optional<Car> optCar = Stream.of(cars).collect(Collectors.maxBy(Comparator.comparingInt(Car::getPrice)));
+        out.println(optCar);
+
+        IntSummaryStatistics stat = Stream.of(cars).collect(Collectors.summarizingInt(Car::getPrice));
+        out.println(stat);
+
+        // 문자열의 결합 기능 -> 스트림의 요소가 String 또는 StringBuffer 처럼 CharSequence의 자손인 경우에만 결합이 가능!
+        // 요소의 타입이 위와같지 않은 경우, toString을 수행한 결과를 결합.
+        String names = Stream.of(cars).map(Car :: getName).collect(Collectors.joining(",","{","}"));
+        out.println(names);
+    }
+
+    @DisplayName("스트림 연산 - partitioningBy에 의한 분류")
+    @Test
+    void streamEx7(){
+        Student[] stuArr = new Student[]{
+                new Student("Habertz",true, 1, 1, 300),
+                new Student("Werner",false, 1, 1, 250),
+                new Student("Mount",true, 1, 1, 200),
+                new Student("Pulisic",false, 1, 2, 150),
+                new Student("Hazard",true, 1, 2, 100),
+                new Student("Kante",false, 1, 2, 50),
+                new Student("Rodrigo",false, 1, 3, 100),
+                new Student("Lionel",false, 1, 3, 150),
+                new Student("Giroud",true, 1, 3, 200),
+
+                new Student("Habertz",true, 2, 1, 300),
+                new Student("Werner",false, 2, 1, 250),
+                new Student("Mount",true, 2, 1, 200),
+                new Student("Pulisic",false, 2, 2, 150),
+                new Student("Hazard",true, 2, 2, 100),
+                new Student("Kante",false, 2, 2, 50),
+                new Student("Rodrigo",false, 2, 3, 100),
+                new Student("Lionel",false, 2, 3, 150),
+                new Student("Giroud",true, 2, 3, 200)
+        };
+
+        // 단순 분할 -> 성별로 분할
+        out.println("1. 단순 분할 : 성별");
+        //Map<Boolean,Integer> map = Stream.of(stuArr).collect(Collectors.partitioningBy(Person::isTrue)); // -> 타입 추론 연습
+        Map<Boolean,List<Student>> stuBySex =  Stream.of(stuArr).collect(Collectors.partitioningBy(Student::isMale));
+        List<Student> stuMale = stuBySex.get(true);
+        List<Student> stuFemale = stuBySex.get(false);
+        for(Student s : stuMale){out.println(s);}
+        for(Student s : stuFemale){out.println(s);}
+        out.println();
+
+        //단순 분할 + 통계 -> 성별로 분할 하고, 학생의 수
+        out.println("2. 단순 분할 + 통계 : 성별 - 학생 수");
+        Map<Boolean,Long> stuNumBySex = Stream.of(stuArr).collect(Collectors.partitioningBy(Student::isMale, Collectors.counting()));
+        out.println("남학생 수 : "+stuNumBySex.get(true));
+        out.println("여학생 수 : "+stuNumBySex.get(false));
+
+        //단순 분할 + 통계 -> 성별로 분할 후, 최대 성적학생
+        out.println("3. 단순 분할 + 통계 : 성별 - 최고점 학생");
+        Map<Boolean, Optional<Student>> stuTopScoreBySex =  Stream.of(stuArr).collect(Collectors.partitioningBy(Student::isMale, Collectors.maxBy(Comparator.comparingInt(Student::getScore))));
+        out.println("남학생 최고점 학생 : "+stuTopScoreBySex.get(true));
+        out.println("남학생 최고점 학생 : "+stuTopScoreBySex.get(false));
+
+        //다중 분할 + 통계 -> 성별로 분할 후, 최대 성적학생
+        out.println("4. 다중 분할 + 통계 : 성별 - 100점 이하");
+        Stream.of(stuArr).collect(Collectors.partitioningBy(Student::isMale, Collectors.partitioningBy(s -> s.getScore() >=100))); // 이것도 지네릭 메서드랑 지네릭 타입이 어떻게 변하고, 타입 안정성을 유지하는지 이해가 안되노..
+        // 주말에 전부다 분석!
     }
 }

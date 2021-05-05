@@ -472,3 +472,37 @@ OptionalInt max = intStream.reduce(Integer::max);
 reduce는 한마디로 스트림의 요소를 소모하면서 연산을 수행하게 되는데, 연산을 수행한 결과와 다음 스트림을 계속해서 
 연산하여 스트림을 다 소모할때까지 연산을 수행하고, 그 최종 연산 결과를 반환하는 것이다.  
 
+## **collect 최종연산 메서드**  
+
+collect 메서드도 reduce 메서드와 유사한 방식으로 동작한다.
+
+스트림의 요소를 수집해서 결과를 리턴하는 최종 연산이다.
+
+collect를 사용하기 위해서는 스트림을 어떻게 수집할 것인지에 대한 정보를 알려주는 `Collector` 인터페이스를 사용한다.  
+
+또는 `Collectors` 클래스의 static 메서드를 통해서 미리 정의된 Collector를 사용할 수 있다.  
+
+collect를 통해서 스트림을 컬렉션과 배열로 변환하는 기능, 통계 처리 기능, reducing, 문자열 결합등이 가능하다.  
+
+StreamEx 예제
+
+**그룹화와 분할**  
+
+Collectors 클래스의 `groupingBy`와 `partitioningBy` 메서드를 통해서 스트림의 요소들은 그룸화하거나 분류할 수 있다.  
+
+그룹화는 스트림의 요소를 특정 기준으로 그룹화하는 것을 의미하고 분류는 지정된 조건에 일치하는 그룹과 그렇지 않은 
+그룹으로 분할하는 것을 의미한다.  
+
+```java
+Collector groupingBy(Function classifier)
+Collector partitioningBy(Predicate perdicate)
+```  
+
+그룹화는 그룹을 분할하기 위해서 `Function`으로, 분할은 `Predicate`를 사용한다.  
+
+이는 예시를 위해서 하나의 메서드만 작성한 것으로 API문서에는 더 다양한 메서드가 오버로딩되어있다.  
+
+당연히 스트림을 특정 기준에 따라서 두개의 그룹으로 나누고자 한다면 분할이 더 빠를 것이고, 이외에는 그룹화를 통해서 
+다수의 그룹으로 나누면 된다.  
+
+StreamEx 예제
