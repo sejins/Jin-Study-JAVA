@@ -5,6 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -239,6 +244,7 @@ class StreamExTest {
         for(Student s : stuMale){out.println(s);}
         for(Student s : stuFemale){out.println(s);}
         out.println();
+
 
         //단순 분할 + 통계 -> 성별로 분할 하고, 학생의 수
         out.println("2. 단순 분할 + 통계 : 성별 - 학생 수");
